@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import vn.com.gsoft.tcom.entity.File;
+import vn.com.gsoft.tcom.entity.Folder;
 import vn.com.gsoft.tcom.model.FileResponse;
 import vn.com.gsoft.tcom.repository.FileRepository;
 import vn.com.gsoft.tcom.service.FileService;
@@ -31,7 +32,6 @@ public class FileServiceImpl implements FileService {
                     .created(new Date())
                     .build();
             File savedFile = hdrRepo.save(newFile);
-
             if (savedFile.getId() != null) {
                 response.append("Tệp ").append(file.getOriginalFilename()).append(" đã được lưu thành công.\n");
             } else {
@@ -41,7 +41,6 @@ public class FileServiceImpl implements FileService {
         return response.toString();
     }
 
-    @Override
     public FileResponse downloadFile(Long idFile) throws Exception {
         File file = hdrRepo.findById(idFile)
                 .orElseThrow(() -> new Exception("Không tìm thấy tệp với id: " + idFile));
@@ -52,5 +51,15 @@ public class FileServiceImpl implements FileService {
             throw new Exception("Dữ liệu file trống!");
         }
         return new FileResponse(fileName, fileType, fileData);
+    }
+
+    @Override
+    public boolean delete(Long idFile) throws Exception {
+        File parentFile = hdrRepo.findById(idFile).orElse(null);
+        if (parentFile == null) {
+            throw new Exception("Không tìm thấy file với id: " + idFile);
+        }
+        hdrRepo.delete(parentFile);
+        return true;
     }
 }

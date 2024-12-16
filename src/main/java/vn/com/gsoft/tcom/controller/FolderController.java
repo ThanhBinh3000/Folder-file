@@ -54,9 +54,9 @@ public class FolderController {
     }
 
     @PostMapping("/updateFolder")
-    public ResponseEntity<String> updateFolder(@RequestParam Long idFolder, @RequestParam String newName) {
+    public ResponseEntity<String> updateFolder(@RequestParam Long idFolder, @RequestParam String name) {
         try {
-            Folder updatedFolder = service.update(idFolder, newName);
+            Folder updatedFolder = service.update(idFolder,name);
             if (updatedFolder != null) {
                 return new ResponseEntity<>("Thư mục đã được cập nhật thành công!", HttpStatus.OK);
             } else {

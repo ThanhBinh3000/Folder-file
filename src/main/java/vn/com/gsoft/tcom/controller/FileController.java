@@ -56,4 +56,19 @@ public class FileController {
         }
     }
 
+    @PostMapping("/delete/{id}")
+    public ResponseEntity<String> deleteFile(@PathVariable Long idFile) {
+        try {
+            boolean isDeleted = service.delete(idFile);
+            if (isDeleted) {
+                return new ResponseEntity<>("File đã được xóa thành công!", HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>("Không tìm thấy file để xóa", HttpStatus.NOT_FOUND);
+            }
+        } catch (Exception e) {
+            log.error("Lỗi khi xóa file với id " + idFile, e);
+            return new ResponseEntity<>("Đã xảy ra lỗi khi xóa file", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 }
