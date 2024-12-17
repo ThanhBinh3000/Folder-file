@@ -1,6 +1,5 @@
 package vn.com.gsoft.tcom.service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 import vn.com.gsoft.tcom.entity.Folder;
 
 import java.util.List;

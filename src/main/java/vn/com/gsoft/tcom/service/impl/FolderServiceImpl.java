@@ -38,11 +38,11 @@ public class FolderServiceImpl implements FolderService {
     @Override
     public Folder details(Long idFolder) throws Exception {
         if (idFolder == null) {
-            throw new Exception("Thư mục không hợp lệ!");
+            throw new Exception("Invalid folder!");
         }
         Folder parentFolder = hdrRepo.findById(idFolder).orElse(null);
         if (parentFolder == null) {
-            throw new Exception("Không tìm thấy thư mục với id: " + idFolder);
+            throw new Exception("Folder not found with id: " + idFolder);
         }
         buildPath(parentFolder);
         List<Folder> subFolders = hdrRepo.findAllByIdFolder(idFolder);
@@ -77,8 +77,10 @@ public class FolderServiceImpl implements FolderService {
     @Override
     public Folder update(Long idFolder, String newName) throws Exception {
         Folder folder = hdrRepo.findById(idFolder)
-                .orElseThrow(() -> new Exception("Không tìm thấy thư mục"));
+                .orElseThrow(() -> new Exception("Folder not found"));
         folder.setName(newName);
+        folder.setModified(new Date());
+        buildPath(folder);
         return hdrRepo.save(folder);
     }
 
@@ -86,7 +88,7 @@ public class FolderServiceImpl implements FolderService {
     public boolean delete(Long idFolder) throws Exception {
         Folder parentFolder = hdrRepo.findById(idFolder).orElse(null);
         if (parentFolder == null) {
-            throw new Exception("Không tìm thấy thư mục với id: " + idFolder);
+            throw new Exception("Folder not found with id: " + idFolder);
         }
         List<File> files = dtlRepo.findAllByIdFolder(idFolder);
         for (File file : files) {

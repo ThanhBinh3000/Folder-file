@@ -24,7 +24,7 @@ public class FolderController {
             List<Folder> folders = service.folderTree();
             return new ResponseEntity<>(folders, HttpStatus.OK);
         } catch (Exception e) {
-            log.error("Lỗi khi lấy cây thư mục", e);
+            log.error("Error when fetching the folder tree", e);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -37,7 +37,7 @@ public class FolderController {
                     new ResponseEntity<>(folder, HttpStatus.OK) :
                     new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (Exception e) {
-            log.error("Lỗi khi lấy chi tiết thư mục với id " + id, e);
+            log.error("Error when fetching folder details with id " + id, e);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -46,10 +46,10 @@ public class FolderController {
     public ResponseEntity<String> createFolder(@RequestParam(required = false) Long idFolder, @RequestParam String name) {
         try {
             Folder folder = service.create(idFolder, name);
-            return new ResponseEntity<>("Thư mục đã được tạo thành công!", HttpStatus.CREATED);
+            return new ResponseEntity<>("Folder created successfully!", HttpStatus.CREATED);
         } catch (Exception e) {
-            log.error("Lỗi khi tạo thư mục", e);
-            return new ResponseEntity<>("Đã xảy ra lỗi khi tạo thư mục", HttpStatus.INTERNAL_SERVER_ERROR);
+            log.error("Error when creating folder", e);
+            return new ResponseEntity<>("An error occurred while creating the folder", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -58,28 +58,28 @@ public class FolderController {
         try {
             Folder updatedFolder = service.update(idFolder,name);
             if (updatedFolder != null) {
-                return new ResponseEntity<>("Thư mục đã được cập nhật thành công!", HttpStatus.OK);
+                return new ResponseEntity<>("Folder updated successfully!", HttpStatus.OK);
             } else {
-                return new ResponseEntity<>("Không tìm thấy thư mục với ID này!", HttpStatus.NOT_FOUND);
+                return new ResponseEntity<>("Folder with this ID not found!", HttpStatus.NOT_FOUND);
             }
         } catch (Exception e) {
-            log.error("Lỗi khi cập nhật thư mục", e);
-            return new ResponseEntity<>("Đã xảy ra lỗi khi cập nhật thư mục", HttpStatus.INTERNAL_SERVER_ERROR);
+            log.error("Error when updating folder", e);
+            return new ResponseEntity<>("An error occurred while updating the folder", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    @PostMapping("/delete/{id}")
+    @PostMapping("/delete/{idFolder}")
     public ResponseEntity<String> deleteFolder(@PathVariable Long idFolder) {
         try {
             boolean isDeleted = service.delete(idFolder);
             if (isDeleted) {
-                return new ResponseEntity<>("Thư mục đã được xóa thành công!", HttpStatus.OK);
+                return new ResponseEntity<>("Folder deleted successfully!", HttpStatus.OK);
             } else {
-                return new ResponseEntity<>("Không tìm thấy thư mục để xóa", HttpStatus.NOT_FOUND);
+                return new ResponseEntity<>("Folder not found for deletion", HttpStatus.NOT_FOUND);
             }
         } catch (Exception e) {
-            log.error("Lỗi khi xóa thư mục với id " + idFolder, e);
-            return new ResponseEntity<>("Đã xảy ra lỗi khi xóa thư mục", HttpStatus.INTERNAL_SERVER_ERROR);
+            log.error("Error when deleting folder with id " + idFolder, e);
+            return new ResponseEntity<>("An error occurred while deleting the folder", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

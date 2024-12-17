@@ -92,7 +92,7 @@
                         <button class="btn btn-danger" onclick="uploadFile()"><i class="fa fa-upload" aria-hidden="true"></i> Upload</button>
                         <input type="file" id="fileInput" onchange="onSelectFile()" name="files" multiple style="display: none;">
                         <button class="btn btn-danger" onclick="downloadFile()"><i class="fa fa-download" aria-hidden="true"></i>Download</button>
-                        <button class="btn btn-danger"><i class="fa fa-trash" aria-hidden="true"></i>Delete</button>
+                        <button class="btn btn-danger" onclick="deleteFolderOrFile()"><i class="fa fa-trash" aria-hidden="true"></i>Delete</button>
                     </div>
 
                 </div>
@@ -113,6 +113,7 @@
                     </table>
                     <input type="text" id="idParent" style="display:none;" />
                     <input type="text" id="idFile" style="display:none;" />
+                    <input type="text" id="idParentOld" style="display:none;" />
                 </div>
                 <div class="col-md-12" style=" position: fixed;left: 0;bottom: 10px;width: 100%;color: white;text-align: center;">
                     <footer id="footerId">

@@ -31,8 +31,8 @@ public class FileController {
             String response = service.uploadFiles(files, folderId);
             return ResponseEntity.status(HttpStatus.OK).body(response);
         } catch (IOException e) {
-            log.error("Lỗi khi lưu tệp vào cơ sở dữ liệu", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Đã xảy ra lỗi khi lưu tệp.");
+            log.error("Error when saving file to the database", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred while saving the file.");
         }
     }
 
@@ -48,26 +48,26 @@ public class FileController {
                     .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + encodedFileName + "\"")
                     .body(fileResponse);
         } catch (UnsupportedEncodingException e) {
-            log.error("Lỗi khi mã hóa tên tệp", e);
+            log.error("Error when encoding file name", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         } catch (Exception e) {
-            log.error("Lỗi khi tải tệp với id " + idFile, e);
+            log.error("Error when downloading file with id " + idFile, e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
 
-    @PostMapping("/delete/{id}")
+    @PostMapping("/delete/{idFile}")
     public ResponseEntity<String> deleteFile(@PathVariable Long idFile) {
         try {
             boolean isDeleted = service.delete(idFile);
             if (isDeleted) {
-                return new ResponseEntity<>("File đã được xóa thành công!", HttpStatus.OK);
+                return new ResponseEntity<>("File deleted successfully!", HttpStatus.OK);
             } else {
-                return new ResponseEntity<>("Không tìm thấy file để xóa", HttpStatus.NOT_FOUND);
+                return new ResponseEntity<>("File not found for deletion", HttpStatus.NOT_FOUND);
             }
         } catch (Exception e) {
-            log.error("Lỗi khi xóa file với id " + idFile, e);
-            return new ResponseEntity<>("Đã xảy ra lỗi khi xóa file", HttpStatus.INTERNAL_SERVER_ERROR);
+            log.error("Error when deleting file with id " + idFile, e);
+            return new ResponseEntity<>("An error occurred while deleting the file", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

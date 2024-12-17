@@ -33,9 +33,9 @@ public class FileServiceImpl implements FileService {
                     .build();
             File savedFile = hdrRepo.save(newFile);
             if (savedFile.getId() != null) {
-                response.append("Tệp ").append(file.getOriginalFilename()).append(" đã được lưu thành công.\n");
+                response.append("File ").append(file.getOriginalFilename()).append(" has been successfully saved.\n");
             } else {
-                response.append("Lỗi khi lưu tệp ").append(file.getOriginalFilename()).append(".\n");
+                response.append("Error saving file ").append(file.getOriginalFilename()).append(".\n");
             }
         }
         return response.toString();
@@ -43,12 +43,12 @@ public class FileServiceImpl implements FileService {
 
     public FileResponse downloadFile(Long idFile) throws Exception {
         File file = hdrRepo.findById(idFile)
-                .orElseThrow(() -> new Exception("Không tìm thấy tệp với id: " + idFile));
+                .orElseThrow(() -> new Exception("File not found with id: " + idFile));
         String fileName = file.getName();
         String fileType = file.getType();
         byte[] fileData = file.getImageData();
         if (fileData == null || fileData.length == 0) {
-            throw new Exception("Dữ liệu file trống!");
+            throw new Exception("File data is empty!");
         }
         return new FileResponse(fileName, fileType, fileData);
     }
@@ -57,7 +57,7 @@ public class FileServiceImpl implements FileService {
     public boolean delete(Long idFile) throws Exception {
         File parentFile = hdrRepo.findById(idFile).orElse(null);
         if (parentFile == null) {
-            throw new Exception("Không tìm thấy file với id: " + idFile);
+            throw new Exception("File not found with id: " + idFile);
         }
         hdrRepo.delete(parentFile);
         return true;

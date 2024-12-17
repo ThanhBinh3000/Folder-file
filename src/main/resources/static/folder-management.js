@@ -9,9 +9,11 @@ function showFiles(folderId) {
             document.getElementById("currentPath").textContent = item.path;
             const fileDisplay = document.getElementById("file-display");
             fileDisplay.innerHTML = "";
+            var folderParent = document.getElementById('folder-child-'+folderId);
+            folderParent.style.background = 'red';
             item.children.forEach(file => {
                 const row = document.createElement("tr");
-                const updatedOn = file.updated ? new Date(file.updated).toLocaleDateString('en-GB') : "N/A";
+                const updatedOn = file.modified ? new Date(file.modified).toLocaleDateString('en-GB') : "N/A";
                 const createdDate = file.created ? new Date(file.created).toLocaleDateString('en-GB') : "N/A";
                 row.innerHTML = `
                 <td onclick="showFiles(${file.id})"><i class="fa fa-folder" aria-hidden="true"></i> ${file.name}</td>
@@ -33,7 +35,12 @@ function showFiles(folderId) {
             `;
                 fileDisplay.appendChild(row);
             });
+            document.getElementById("idParentOld").value = document.getElementById("idParent").value;
             document.getElementById("idParent").value = folderId;
+            if(document.getElementById("idParentOld").value){
+                var folderParentOld = document.getElementById('folder-child-'+document.getElementById("idParentOld").value);
+                folderParentOld.style.background = 'none';
+            }
         })
         .catch(error => console.error('Error:', error));
 }
@@ -47,6 +54,7 @@ function renderTree(data, container) {
         const li = document.createElement('li');
         const node = document.createElement('span');
         node.className = 'folder';
+        node.id = 'folder-child-'+item.id;
         node.innerHTML = `
                 ${item.children && item.children.length > 0
             ? `<i class="fa fa-caret-right" onclick="toggleVisibility(${item.id})"></i>`
@@ -141,6 +149,7 @@ async function getEditFolder(name, id){
     document.getElementById("folderName").value = '';
     document.getElementById("folderId").value = '';
     showFiles(document.getElementById("idParent").value);
+    getFolders()
     closeModal();
     document.getElementById("label-folder").textContent = 'Add folder';
     document.getElementById("btn-save-folder").textContent = 'Add Folder';
@@ -189,7 +198,12 @@ async function onSelectFile() {
 async function backFolder(){
     var id = document.getElementById("idParent").value;
     if(id){
-        showFiles(id);
+        fetch(`/folders/details/${id}`)
+            .then(response => response.json())
+            .then(item => {
+                showFiles(item.idFolder)
+            })
+            .catch(error => console.error('Error:', error));
     }
 }
 
@@ -208,6 +222,32 @@ async function downloadFile() {
                 window.URL.revokeObjectURL(link.href);
             } else {
                 alert("Lỗi khi tải tệp");
+            }
+        } catch (error) {
+            console.error("Có lỗi xảy ra:", error);
+            alert("Lỗi khi tải tệp");
+        }
+    }
+}
+
+async function deleteFolderOrFile() {
+    var idFile = document.getElementById("idFile").value;
+    var idFolder = document.getElementById("idParent").value;
+    if (idFile || idFolder) {
+        try {
+            const response = await fetch(idFile ? `/file/delete/${idFile}` : `/folders/delete/${idFolder}`, {
+                method: "POST",
+            });
+            if (response.ok) {
+                if (idFile){
+                    document.getElementById("idFile").value = null;
+                    showFiles(idFolder);
+                } else {
+                    document.getElementById("idParent").value = null;
+                    getFolders();
+                }
+            } else {
+                alert("Lỗi xóa file");
             }
         } catch (error) {
             console.error("Có lỗi xảy ra:", error);
